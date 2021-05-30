@@ -142,16 +142,17 @@ class DRACO_phase_1(pl.LightningModule):
 
 class DRACO_phase_2(pl.LightningModule):
 
-    def __init__(self, hparams: DictConfig = None, model_depth = None, checkpoint_file_decoder=None):
+    def __init__(self, hparams: DictConfig = None, depth_model = None, checkpoint_file_decoder=None):
         super(DRACO_phase_2, self).__init__()
         self.hparams = hparams
 
         ################## Model initialization
-        if model_depth is None:
+        if depth_model is None:
             self.model = getattr(getattr(models, self.hparams.model.file), self.hparams.model.type)(**self.hparams.model.args)
             print("[Warning]: No pretrained depth model is found.")
         else:
-            self.model = model_depth
+            self.model = depth_model
+            print("[INFO]: Using pretrained depth network and training NOCS")
         self.model.train()
 
         self.nocs_decoder = getattr(models, self.hparams.model.file).NOCS_decoder().train()
@@ -163,7 +164,7 @@ class DRACO_phase_2(pl.LightningModule):
 
         ################## Loss functions
         self.BCELoss          = torch.nn.BCELoss()
-        self.Photometric_loss = photometric_loss.Photometric_loss(vgg_model = self.vgg_model, **self.hparams.loss[1].args)
+        self.Photometric_loss = photometric_loss.Photometric_loss(vgg_model = self.vgg_model, **self.hparams.loss.photometric.args)
         self.Smoothness_loss  = smoothness_loss.Smoothness_loss()
         self.nocs_smoothness  = smoothness_loss.Smoothness_loss_nocs()
         self.nocs_photo       = photometric_loss.Photometric_loss_nocs(**self.hparams.loss.photometric.args)
@@ -199,16 +200,18 @@ class DRACO_phase_2(pl.LightningModule):
     def train_dataloader(self):
 
         self.hparams.dataset.train.args['dataset_path'] = os.path.join(utils.get_original_cwd(),self.hparams.dataset.train.args['dataset_path'])
-        train_data_set = getattr(data_loader, self.hparams.dataset.type)(**self.hparams.dataset.train.args, transform = getattr(data_loader, self.hparams.dataset.train.type).ToTensor())
+        train_data_set = getattr(data_loader, self.hparams.dataset.train.type)(**self.hparams.dataset.train.args, transform = getattr(data_loader, self.hparams.dataset.train.type).ToTensor())
         train_dataloader = DataLoader(train_data_set, **self.hparams.dataset.train.loader.args)
+
 
         return train_dataloader
 
     def val_dataloader(self):
 
         self.hparams.dataset.val.args['dataset_path'] = os.path.join(utils.get_original_cwd(),self.hparams.dataset.val.args['dataset_path'])
-        val_data_set = getattr(data_loader, self.hparams.dataset.val.type)()
+        val_data_set = getattr(data_loader, self.hparams.dataset.val.type)(**self.hparams.dataset.val.args, transform = getattr(data_loader, self.hparams.dataset.val.type).ToTensor())
         val_dataloader = DataLoader(val_data_set, **self.hparams.dataset.val.loader.args)
+
 
         return val_dataloader
 

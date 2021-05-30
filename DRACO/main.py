@@ -30,13 +30,13 @@ def run(cfg):
 
     print(os.getcwd())
     checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
-    model_depth = training_model_1.load_from_checkpoint(checkpoint_file)
+    model.load_from_checkpoint(checkpoint_file)
 
     ############# Phase 2 training the NOCS decoder
     checkpoint_callback_2 = ModelCheckpoint(**cfg.callback.model_checkpoint.nocs.args)
 
     print("\n[Info] Starting Phase 2 training (NOCS decoder) using depth checkpoint from path: ", checkpoint_file)
-    model_2 = training_model_2(hparams = cfg, depth_model = model_depth.model)
+    model_2 = training_model_2(hparams = cfg, depth_model = model.model)
     trainer = Trainer(**cfg.trainer, callbacks = [checkpoint_callback_2])
     trainer.fit(model_2)
 
