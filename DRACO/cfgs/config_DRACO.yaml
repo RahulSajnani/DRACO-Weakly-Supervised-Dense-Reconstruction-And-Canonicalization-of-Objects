@@ -3,9 +3,9 @@ trainer:
   distributed_backend: "dp"
   accumulate_grad_batches: 4
   profiler: False
-  max_epochs: 1
+  max_epochs: 20
   # amp_level: "02"
-  #precision: 16
+  # precision: 16
 
 scheduler:
   type: MultiStepLR
@@ -95,7 +95,7 @@ callback:
       type: pl.callbacks.ModelCheckpoint
       args:
         filename: "model-{epoch}-{val_loss:.4f}-nocs_and_depth"
-        dirpath: "./checkpoints"
+        dirpath: "./checkpoints_nocs_and_depth"
         monitor: "val_loss"
         save_top_k: 1
     
