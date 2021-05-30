@@ -1,0 +1,9 @@
+# @package _group_
+- type: Photometric_loss
+  weight: 1.0
+  args:
+    alpha: 0.15
+
+- type: Smoothness_loss
+  weight: 0.1
+

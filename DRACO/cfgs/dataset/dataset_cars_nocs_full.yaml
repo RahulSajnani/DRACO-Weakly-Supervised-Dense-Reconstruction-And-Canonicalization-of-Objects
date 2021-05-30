@@ -1,0 +1,17 @@
+# @package _group_
+  type: MultiView_canonical_dataset_blender
+  args: 
+    dataset_path: "../data/cars_nocs_full/" # "../data/sunny_cars/"
+    num_views: 3
+    train: 1
+    normalize: True
+    gt_depth: False
+    jitter: True
+    canonical: True
+
+  loader:
+    args:
+      batch_size: 3
+      num_workers: 8
+      shuffle: True
+

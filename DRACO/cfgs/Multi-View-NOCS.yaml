@@ -1,0 +1,40 @@
+datasets:
+  name: MultiView_dataset
+  path: ../data/prepare
+
+trainer:
+  # 1 with geometric 
+  # 2 without chamfer loss
+  option: 1
+  epochs: 300
+
+  network: 
+    name: ResNetUNet50 
+    pretrained: True
+  
+  optimizer: 
+    name: Adam
+    args:
+      lr: 1e-5    
+  
+  losses:
+    - name: BCELoss
+      weight: 1.0
+
+    - name: Photometric_loss
+      weight: 1.0
+      args: 
+        alpha: 0.05
+
+    - name: Smoothness_loss
+      weight: 0.1
+
+    - name: Geometric_loss
+      weight: 0.001
+  
+  scheduler:
+    name: MultiStepLR
+    args: 
+      milestones: [40, 100, 150, 200]
+      gamma: 0.1
+

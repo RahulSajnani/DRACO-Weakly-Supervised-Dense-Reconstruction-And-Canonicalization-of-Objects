@@ -1,0 +1,14 @@
+# @package _group_
+  type: MultiView_dataset
+  args: 
+    dataset_path: "../data/prepare/"
+    num_views: 3
+    train: 1
+    gt_depth: False
+
+  loader:
+    args:
+      batch_size: 2
+      num_workers: 4
+      shuffle: True
+      

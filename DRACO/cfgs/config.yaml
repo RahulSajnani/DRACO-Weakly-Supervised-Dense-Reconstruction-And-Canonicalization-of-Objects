@@ -1,0 +1,9 @@
+defaults:
+  - loss: losses_all
+  - model: ResNetUNet34
+  - dataset: dataset_cars_nocs
+  - scheduler: MultiStepLR #ReduceLROnPlateau
+  - trainer: trainer_1
+  - optimizer: Adam
+  - callbacks: callback_1
+  
