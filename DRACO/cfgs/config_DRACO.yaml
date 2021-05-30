@@ -3,7 +3,7 @@ trainer:
   distributed_backend: "dp"
   accumulate_grad_batches: 4
   profiler: False
-  max_epochs: 20
+  max_epochs: 1
   # amp_level: "02"
   #precision: 16
 
@@ -89,11 +89,13 @@ callback:
       args:
         filename: "model-{epoch}-{val_loss:.4f}-depth"
         monitor: "val_loss"
+        dirpath: "./checkpoints"
         save_top_k: 1
     nocs:
       type: pl.callbacks.ModelCheckpoint
       args:
         filename: "model-{epoch}-{val_loss:.4f}-nocs_and_depth"
+        dirpath: "./checkpoints"
         monitor: "val_loss"
         save_top_k: 1
     

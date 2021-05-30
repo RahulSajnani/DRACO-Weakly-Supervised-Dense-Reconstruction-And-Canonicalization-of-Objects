@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 import os, hydra, logging, glob
 from omegaconf import DictConfig
 from pytorch_lightning.loggers import CometLogger, TensorBoardLogger
+from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 # Training models
 from trainers import DRACO_phase_1 as training_model_1
@@ -20,19 +21,19 @@ log = logging.getLogger(__name__)
 def run(cfg):
 
     log.info(cfg.pretty())
-
-    checkpoint_callback = pl.ModelCheckpoint(**cfg.callback.model_checkpoint.depth.args)
+    print(os.getcwd())
+    checkpoint_callback = ModelCheckpoint(**cfg.callback.model_checkpoint.depth.args)
     model = training_model_1(hparams = cfg)
 
     trainer = Trainer(**cfg.trainer, callbacks = [checkpoint_callback])
     trainer.fit(model)
 
-
-    checkpoint_file = glob.glob("./**.ckpt")[0]
+    print(os.getcwd())
+    checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
     model_depth = training_model_1.load_from_checkpoint(checkpoint_file)
-    
+
     ############# Phase 2 training the NOCS decoder
-    checkpoint_callback_2 = pl.ModelCheckpoint(**cfg.callback.model_checkpoint.nocs.args)
+    checkpoint_callback_2 = ModelCheckpoint(**cfg.callback.model_checkpoint.nocs.args)
 
     print("\n[Info] Starting Phase 2 training (NOCS decoder) using depth checkpoint from path: ", checkpoint_file)
     model_2 = training_model_2(hparams = cfg, depth_model = model_depth.model)

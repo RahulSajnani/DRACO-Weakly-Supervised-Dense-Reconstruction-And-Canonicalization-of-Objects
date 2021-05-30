@@ -61,13 +61,13 @@ class DRACO_phase_1(pl.LightningModule):
         optimizer1 = getattr(torch.optim, self.hparams.optimizer.type)(self.model.parameters(), **self.hparams.optimizer.args)
         scheduler1 = getattr(torch.optim.lr_scheduler, self.hparams.scheduler.type)(optimizer1, **self.hparams.scheduler.args)
         print(scheduler1)
-        
+
         return [optimizer1], [scheduler1]
 
     def train_dataloader(self):
-        
+
         self.hparams.dataset.train.args['dataset_path'] = os.path.join(utils.get_original_cwd(),self.hparams.dataset.train.args['dataset_path'])
-        train_data_set = getattr(data_loader, self.hparams.dataset.type)(**self.hparams.dataset.train.args, transform = getattr(data_loader, self.hparams.dataset.train.type).ToTensor())
+        train_data_set = getattr(data_loader, self.hparams.dataset.train.type)(**self.hparams.dataset.train.args, transform = getattr(data_loader, self.hparams.dataset.train.type).ToTensor())
         train_dataloader = DataLoader(train_data_set, **self.hparams.dataset.train.loader.args)
 
         return train_dataloader
@@ -75,7 +75,7 @@ class DRACO_phase_1(pl.LightningModule):
     def val_dataloader(self):
 
         self.hparams.dataset.val.args['dataset_path'] = os.path.join(utils.get_original_cwd(),self.hparams.dataset.val.args['dataset_path'])
-        val_data_set = getattr(data_loader, self.hparams.dataset.val.type)()
+        val_data_set = getattr(data_loader, self.hparams.dataset.val.type)(**self.hparams.dataset.val.args, transform = getattr(data_loader, self.hparams.dataset.val.type).ToTensor())
         val_dataloader = DataLoader(val_data_set, **self.hparams.dataset.val.loader.args)
 
         return val_dataloader
@@ -115,29 +115,29 @@ class DRACO_phase_1(pl.LightningModule):
                 'smoothness_loss': smoothness_loss / (self.w_smooth + 1e-6),
                 # 'geometric_loss': geometric_loss / (self.w_geometric + 1e-6)
                 }
-    
+
     def training_step(self, batch, batch_idx):
 
         loss_dictionary = self.forward_pass(batch, batch_idx)
         self.log_loss_dict(loss_dictionary)
 
         return loss_dictionary["loss"]
-        
-        
+
+
     def validation_step(self, batch, batch_idx):
 
         loss_dictionary = self.forward_pass(batch, batch_idx)
         self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True, on_step=True)
         self.log_loss_dict(loss_dictionary)
-        
+
         return loss_dictionary["loss"]
 
 
     def log_loss_dict(self, loss_dictionary):
 
-        for key in loss_dictionary:    
+        for key in loss_dictionary:
             self.log(key, loss_dictionary[key], on_epoch=True, prog_bar=True, logger=True, on_step=True)
-        
+
 
 
 class DRACO_phase_2(pl.LightningModule):
@@ -175,7 +175,7 @@ class DRACO_phase_2(pl.LightningModule):
         self.w_bce = self.hparams.loss.mask.weight
         self.w_photo = self.hparams.loss.photometric.weight
         self.w_smooth = self.hparams.loss.smoothness.weight
-        self.w_geometric = self.hparams.loss.geometric.weight    
+        self.w_geometric = self.hparams.loss.geometric.weight
         ######################################################################################################
 
         self.least_loss = 100
@@ -216,10 +216,10 @@ class DRACO_phase_2(pl.LightningModule):
 
         target_mask = batch['masks'][:, 0].float()
         batch['views'] = batch['views'].float()
-        
+
         output = self.model(batch['views'][:, 0], encoder = True)
-        
-        
+
+
         target_depths = [sigmoid_2_depth(output[0], scale_factor = self.hparams.utils.depth_scale)]
 
         if self.current_epoch > self.train_epoch_nocs:
@@ -253,10 +253,10 @@ class DRACO_phase_2(pl.LightningModule):
             perceptual_loss_nocs = 0
             nocs_smoothness_loss = 0
             nocs_masked = target_nocs[:, 0] * batch["masks"][:, 0].float()
-        
+
             nocs_smoothness_loss += self.nocs_smoothness(nocs_masked, batch)
             perceptual_loss_nocs += (self.perceptual_loss(nocs_generated[:, 0] * batch["masks"][:, 0].float()) - self.perceptual_loss(nocs_masked)).abs().mean()
-            
+
             nocs_loss = torch.mean(torch.abs(nocs_generated.detach() - target_nocs))
 
             # Detaching target depths as we do not wish to back propagate through predicted depths
@@ -265,11 +265,11 @@ class DRACO_phase_2(pl.LightningModule):
             nocs_loss = torch.sum(torch.abs(nocs_generated - target_nocs) * batch["masks"].float()) / torch.sum(batch["masks"] > 0.5)
             loss += 1.0 * nocs_smoothness_loss +  nocs_photometric_loss
 
-            
+
             if not torch.isnan(nocs_generated).any():
                 loss += nocs_loss +  perceptual_loss_nocs
-            
-            
+
+
         return {'loss': loss,
                 "nocs_loss": nocs_loss,
                 'bce_loss': bce_loss / (self.w_bce + 1e-6),
@@ -285,20 +285,20 @@ class DRACO_phase_2(pl.LightningModule):
         self.log_loss_dict(loss_dictionary)
 
         return loss_dictionary["loss"]
-        
-        
+
+
     def validation_step(self, batch, batch_idx):
 
         loss_dictionary = self.forward_pass(batch, batch_idx)
         self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True, on_step=True)
         self.log_loss_dict(loss_dictionary)
-        
+
         return loss_dictionary["loss"]
 
 
     def log_loss_dict(self, loss_dictionary):
 
-        for key in loss_dictionary:    
+        for key in loss_dictionary:
             self.log(key, loss_dictionary[key], on_epoch=True, prog_bar=True, logger=True, on_step=True)
-        
+
 
