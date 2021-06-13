@@ -135,9 +135,10 @@ dependencies:
   - zstd=1.4.9=haebb681_0
   - pip:
     - antlr4-python3-runtime==4.8
-    - hydra-core==1.0.6
+    - gputil==1.4.0
+    - hydra-core==1.1.0
     - importlib-resources==5.1.4
-    - omegaconf==2.0.6
+    - omegaconf==2.1.0
     - opencv-python==4.5.2.54
     - palettable==3.3.0
     - pebble==4.6.1
