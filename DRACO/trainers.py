@@ -215,6 +215,13 @@ class DRACO_phase_2(pl.LightningModule):
 
         return val_dataloader
 
+    def test_pass(self, batch):
+
+        out = self.model.forward(batch,  encoder = True)
+        depth = sigmoid_2_depth(out[0], scale_factor = self.hparams.utils.depth_scale)
+        mask = out[1]
+        return depth, mask, out[2]
+
     def forward_pass(self, batch, batch_idx):
 
         target_mask = batch['masks'][:, 0].float()
