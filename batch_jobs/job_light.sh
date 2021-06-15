@@ -5,12 +5,12 @@
 #SBATCH --mem-per-cpu=2048
 #SBATCH --time=2-00:00:00
 #SBATCH --mail-type=END
-
+#SBATCH --nodelist gnode39
 #module add cuda/10.2
 #module add cudnn/7.6.5-cuda-10.2
 source ~/anaconda3/bin/activate
-conda activate SS_NOCS
-cd ~/Project/DRACO_VO/DRACO/
+conda activate DRACO
+cd /home/rahulsajnani/research/DRACO-Weakly-Supervised-Dense-Reconstruction-And-Canonicalization-of-Objects/DRACO
 #git checkout refactor
 
 #export NCCL_DEBUG=INFO

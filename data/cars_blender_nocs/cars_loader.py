@@ -91,7 +91,7 @@ class CarsLoader(object):
             current_local_frame_id = '%.8d' % (int(local_target_frame_id) + offset)
 
             current_color00_img_file    = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_Color_00.png")
-            current_mask00_img_file     = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_Color_00.png")
+            current_mask00_img_file     = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_Mask_00.png")
             current_nox00_img_file      = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_NOXRayTL_00.png")
             current_depth_img_file      = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_Depth_00.exr")
             current_extrinsics_file     = os.path.join(self.dataset_dir, seq, f"frame_{current_local_frame_id}_CameraPose.json")

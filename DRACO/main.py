@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 @hydra.main(config_path="cfgs", config_name="config_DRACO.yaml")
 def run(cfg):
 
-    log.info(cfg.pretty())
+    log.info(cfg)
     print(os.getcwd())
     checkpoint_callback = ModelCheckpoint(**cfg.callback.model_checkpoint.depth.args)
     model = training_model_1(hparams = cfg)
@@ -30,7 +30,9 @@ def run(cfg):
 
     print(os.getcwd())
     checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
-    model.load_from_checkpoint(checkpoint_file)
+    
+    #checkpoint_file = glob.glob("/home/rahulsajnani/research/DRACO-Weakly-Supervised-Dense-Reconstruction-And-Canonicalization-of-Objects/DRACO/outputs/2021-06-12/02-55-56/checkpoints/*.ckpt")[0]
+    model = training_model_1.load_from_checkpoint(checkpoint_path = checkpoint_file)
 
     ############# Phase 2 training the NOCS decoder
     checkpoint_callback_2 = ModelCheckpoint(**cfg.callback.model_checkpoint.nocs.args)
