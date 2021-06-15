@@ -97,10 +97,7 @@ class DRACO_phase_1(pl.LightningModule):
 
 
         # Loss Computation
-
-
         bce_loss            = self.w_bce         * (self.BCELoss(output[1], target_mask))
-        #print(bce_loss, "bce")
         photometric_loss    = self.w_photo       * self.Photometric_loss(batch, target_depths)
         smoothness_loss     = self.w_smooth      * self.Smoothness_loss(output[0],batch)
 
@@ -271,11 +268,11 @@ class DRACO_phase_2(pl.LightningModule):
             batch["nocs"] = target_nocs
             nocs_photometric_loss = self.nocs_photo(batch, target_depths.detach())#
             nocs_loss = torch.sum(torch.abs(nocs_generated - target_nocs) * batch["masks"].float()) / torch.sum(batch["masks"] > 0.5)
-            loss += 1.0 * nocs_smoothness_loss +  nocs_photometric_loss
+            loss += 0.3 * nocs_smoothness_loss +  nocs_photometric_loss
 
-
+            # If Umeyama alignment (rare case) fails then the transformed NOCS has inf values and so we do not penalize in such a case
             if not torch.isnan(nocs_generated).any():
-                loss += nocs_loss +  perceptual_loss_nocs
+                loss += nocs_loss +  2 * perceptual_loss_nocs
 
 
         return {'loss': loss,

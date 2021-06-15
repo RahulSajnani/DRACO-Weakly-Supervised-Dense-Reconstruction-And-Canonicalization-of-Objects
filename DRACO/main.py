@@ -29,7 +29,7 @@ def run(cfg):
     trainer.fit(model)
 
     print(os.getcwd())
-    #checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
+    checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
     
     #checkpoint_file = glob.glob("/home/rahulsajnani/research/DRACO-Weakly-Supervised-Dense-Reconstruction-And-Canonicalization-of-Objects/DRACO/outputs/2021-06-12/02-55-56/checkpoints/*.ckpt")[0]
     model = training_model_1.load_from_checkpoint(checkpoint_path = checkpoint_file)
