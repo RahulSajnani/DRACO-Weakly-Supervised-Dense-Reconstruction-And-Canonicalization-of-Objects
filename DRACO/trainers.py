@@ -35,9 +35,8 @@ class DRACO_phase_1(pl.LightningModule):
         self.hparams = hparams
         self.model = getattr(getattr(models, self.hparams.model.file), self.hparams.model.type)(**self.hparams.model.args)
         self.vgg_model = torchvision.models.vgg16(pretrained=True).eval().features[:9]
-        print(self.vgg_model.training)
 
-        self.BCELoss          = torch.nn.BCELoss()
+        self.BCELoss          = torch.nn.BCELoss(reduction="none")
         self.Photometric_loss = photometric_loss.Photometric_loss(vgg_model = self.vgg_model, **self.hparams.loss.photometric.args)
         self.Smoothness_loss  = smoothness_loss.Smoothness_loss()
         self.Geometric_loss   = geometric_loss.Geometric_loss()
@@ -60,7 +59,6 @@ class DRACO_phase_1(pl.LightningModule):
 
         optimizer1 = getattr(torch.optim, self.hparams.optimizer.type)(self.model.parameters(), **self.hparams.optimizer.args)
         scheduler1 = getattr(torch.optim.lr_scheduler, self.hparams.scheduler.type)(optimizer1, **self.hparams.scheduler.args)
-        print(scheduler1)
 
         return [optimizer1], [scheduler1]
 
@@ -95,9 +93,14 @@ class DRACO_phase_1(pl.LightningModule):
 
         target_depths = torch.cat(target_depths, dim=1)
 
+        # Weigh foreground pixels high
+        weight_matrix = torch.ones(target_mask.shape).type_as(target_mask)
+        foreground_area_ratio = torch.sum(target_mask > 0.5) / (torch.sum(weight_matrix) + 1e-6)
+        weight_matrix[target_mask > 0.5] = weight_matrix[target_mask > 0.5] * (1 / (foreground_area_ratio + 0.00000001))
+
 
         # Loss Computation
-        bce_loss            = self.w_bce         * (self.BCELoss(output[1], target_mask))
+        bce_loss            = self.w_bce         * (self.BCELoss(output[1], target_mask) * weight_matrix).mean()
         photometric_loss    = self.w_photo       * self.Photometric_loss(batch, target_depths)
         smoothness_loss     = self.w_smooth      * self.Smoothness_loss(output[0],batch)
 
@@ -127,7 +130,7 @@ class DRACO_phase_1(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
 
         loss_dictionary = self.forward_pass(batch, batch_idx)
-        self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True, on_step=True)
+        self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True)
         self.log_loss_dict(loss_dictionary)
 
         return loss_dictionary["loss"]

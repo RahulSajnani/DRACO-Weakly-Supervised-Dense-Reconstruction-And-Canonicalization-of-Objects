@@ -1,5 +1,0 @@
-# @package _group_
-  file: resnet
-  type: ResNetUNet50 
-  args:
-    pretrained: True

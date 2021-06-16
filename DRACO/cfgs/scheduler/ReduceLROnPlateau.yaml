@@ -1,6 +1,0 @@
-# @package _group_
- type: ReduceLROnPlateau
- args:
-   factor: 0.1
-   patience: 10
-   verbose: True

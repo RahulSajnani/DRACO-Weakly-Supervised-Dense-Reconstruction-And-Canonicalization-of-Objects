@@ -1,7 +1,7 @@
 #!/bin/bash
 #BATCH -A $USER
-#SBATCH -n 30
-#SBATCH --gres=gpu:3
+#SBATCH -n 40
+#SBATCH --gres=gpu:4
 #SBATCH --mem-per-cpu=2048
 #SBATCH --time=2-00:00:00
 #SBATCH --mail-type=END

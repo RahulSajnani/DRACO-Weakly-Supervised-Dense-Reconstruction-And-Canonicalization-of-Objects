@@ -1,7 +1,0 @@
-# @package _group_
-model_checkpoint:
-  type: pl.callbacks.ModelCheckpoint
-  args:
-    monitor: epoch_train_loss
-    save_top_k: 1
-    filepath: "./logger"
