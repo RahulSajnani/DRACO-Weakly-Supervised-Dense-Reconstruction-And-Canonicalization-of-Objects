@@ -20,12 +20,12 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
 
 
-| Dataset               | Link     | Size (GB) |
-| --------------------- | -------- | --------- |
-| Cars (**prepared**)   | [link]() | 3.8       |
-| Planes (**prepared**) | [link]() | 3.6       |
-| DRACO20K cars         | [link]() | 89        |
-| DRACO20K planes       | [link]() | 15        |
+| Dataset                       | Link                                                         | Size (GB) |
+| ----------------------------- | ------------------------------------------------------------ | --------- |
+| Cars (**prepared**) (small)   | [link](https://iiitaphyd-my.sharepoint.com/:u:/r/personal/robotics_iiit_ac_in/Documents/DRACO/car_reflection_canonical_wo_depth.zip?csf=1&web=1&e=I2EE6N) | 3.8       |
+| Planes (**prepared**) (small) | Coming soon                                                  | 3.6       |
+| DRACO20K cars                 | Coming soon                                                  | 89        |
+| DRACO20K planes               | Coming soon                                                  | 15        |
 
 To begin training, download the Cars (**prepared**) dataset and save unzip to path `./data/DRACO20K_cars`. 
 
@@ -77,13 +77,15 @@ To begin training, download the Cars (**prepared**) dataset and save unzip to pa
 
 ## Pretrained models
 
-
+Coming soon.
 
 
 
 ## Citation
 
-Cite us, if you find our work helpful.
+
+
+If you find our work helpful, please consider to citing:
 
 ```
 @misc{sajnani2020draco,
