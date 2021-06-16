@@ -304,7 +304,7 @@ class DRACO_phase_2(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
 
         loss_dictionary = self.forward_pass(batch, batch_idx)
-        self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True, on_step=True)
+        self.log("val_loss", loss_dictionary["loss"], on_epoch=True, prog_bar=True, logger=True)
         self.log_loss_dict(loss_dictionary)
 
         return loss_dictionary["loss"]

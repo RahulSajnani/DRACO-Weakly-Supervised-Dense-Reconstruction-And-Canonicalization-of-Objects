@@ -88,8 +88,9 @@ callback:
       type: pl.callbacks.ModelCheckpoint
       args:
         filename: "model-{epoch}-{val_loss:.4f}-depth"
-        monitor: "val_loss_epoch"
+        monitor: "val_loss"
         mode: "min"
+        verbose: True
         dirpath: "./checkpoints"
         save_top_k: 1
     nocs:
@@ -97,7 +98,8 @@ callback:
       args:
         filename: "model-{epoch}-{val_loss:.4f}-nocs_and_depth"
         dirpath: "./checkpoints_nocs_and_depth"
-        monitor: "val_loss_epoch"
+        monitor: "val_loss"
         mode: "min"
+        verbose: True
         save_top_k: 1
     
