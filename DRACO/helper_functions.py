@@ -11,8 +11,6 @@ def sigmoid_2_depth(normalised_depth, scale_factor=10):
     '''
     depth = scale_factor * (1 - normalised_depth)
 
-    #depth = 1 / (3*normalised_depth + 0.001)
-
     return depth
 
 

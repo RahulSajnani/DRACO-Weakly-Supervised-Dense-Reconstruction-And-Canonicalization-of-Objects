@@ -14,6 +14,23 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
 
 
+## Dataset
+
+**Prepared** datasets are the ones prepared to train wherein we take 3 consecutive data sample from the DRACO20K dataset and club them.  
+
+
+
+| Dataset                       | Link                                                         | Size (GB) |
+| ----------------------------- | ------------------------------------------------------------ | --------- |
+| Cars (**prepared**) (small)   | [link](https://iiitaphyd-my.sharepoint.com/:u:/r/personal/robotics_iiit_ac_in/Documents/DRACO/car_reflection_canonical_wo_depth.zip?csf=1&web=1&e=I2EE6N) | 3.8       |
+| Planes (**prepared**) (small) | Coming soon                                                  | 3.6       |
+| DRACO20K cars                 | Coming soon                                                  | 89        |
+| DRACO20K planes               | Coming soon                                                  | 15        |
+
+To begin training, download the Cars (**prepared**) dataset and save unzip to path `./data/DRACO20K_cars`. 
+
+
+
 ## Running the code
 
 1. #### Environment
@@ -22,14 +39,22 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
    ```bash
    conda create -f environment.yaml
+   # As tk3dv is not available on PyPi this will throw an error while installing tk3dv but that is not an issue
    conda activate DRACO
+   # Install tk3dv manually in the same environment
    pip install git+https://github.com/drsrinathsridhar/tk3dv.git
    ```
 
 2. #### Training
 
+   Please refer to the configuration file in `./DRACO/cfgs/config_DRACO.yaml` and change the path to the dataset and set the hyper-parameters.
+
+   **Note:** As the second training phase is heavy (due to the DRACO + VGG (perceptual loss) + multi-view consistency), make sure you set the batch_size as the number of GPUs available for training. For instance, if you have 2 GPUs set batch_size to 2 and accumulated_num_batches to 6 (2 x 6 = 12)
+
    ```bash
    cd DRACO
+   # Before running the script change the path to the dataset in /DRACO/cfgs/config_DRACO.yaml
+   
    CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py
    ```
 
@@ -39,24 +64,28 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
    ```bash
    cd DRACO
-   CUDA_VISIBLE_DEVICES=0,1,2,3 python evaluation.py 
+   # For DRACO20K dataset
+   CUDA_VISIBLE_DEVICES=0,1,2,3 python evaluation.py --model <path_to_checkpoint> --path <path_to_directory_with_images> --output <path_to_output_directory> --real 0
+   
+   # For Real dataset
+   CUDA_VISIBLE_DEVICES=0,1,2,3 python evaluation.py --model <path_to_checkpoint> --path <path_to_directory_with_images> --output <path_to_output_directory> --real 1
    ```
 
    
-
-## Dataset
-
-We have zipped a smaller version of our training cars dataset. Download our dataset [here]().
 
 
 
 ## Pretrained models
 
+Coming soon.
+
 
 
 ## Citation
 
-Cite us, if you find our work helpful.
+
+
+If you find our work helpful, please consider to citing:
 
 ```
 @misc{sajnani2020draco,

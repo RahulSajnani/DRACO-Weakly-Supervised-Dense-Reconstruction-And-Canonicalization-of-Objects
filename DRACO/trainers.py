@@ -263,6 +263,9 @@ class DRACO_phase_2(pl.LightningModule):
         if self.current_epoch > self.train_epoch_nocs:
 
             target_nocs = torch.stack(target_nocs, dim = 1)
+
+            # Generate NOCS by transforming the predicted depth to the canonical frame
+            # Detaching predicted depths to avoid backpropagation of NOCS errors through the predicted depth
             nocs_generated = generate_nocs(batch, (target_depths.unsqueeze(2).detach() * batch["masks"].float())).detach()
 
             perceptual_loss_nocs = 0
@@ -270,17 +273,21 @@ class DRACO_phase_2(pl.LightningModule):
             nocs_masked = target_nocs[:, 0] * batch["masks"][:, 0].float()
 
             nocs_smoothness_loss += self.nocs_smoothness(nocs_masked, batch)
+            
+            # Perceptual loss between predicted NOCS and independent NOCS estimate from depth
             perceptual_loss_nocs += (self.perceptual_loss(nocs_generated[:, 0] * batch["masks"][:, 0].float()) - self.perceptual_loss(nocs_masked)).abs().mean()
 
             nocs_loss = torch.mean(torch.abs(nocs_generated.detach() - target_nocs))
 
-            # Detaching target depths as we do not wish to back propagate through predicted depths
             batch["nocs"] = target_nocs
+
+            # Detaching target depths as we do not wish to back propagate NOCS errors through predicted depths
+            # Geometric loss to ensure multi view consistency in NOCS maps
             nocs_photometric_loss = self.nocs_photo(batch, target_depths.detach())#
             nocs_loss = torch.sum(torch.abs(nocs_generated - target_nocs) * batch["masks"].float()) / torch.sum(batch["masks"] > 0.5)
             loss += 0.3 * nocs_smoothness_loss +  nocs_photometric_loss
 
-            # If Umeyama alignment (rare case) fails then the transformed NOCS has inf values and so we do not penalize in such a case
+            # If Umeyama alignment (rare case) fails then the independent NOCS estimate has inf values and so we do not penalize in such a scenario
             if not torch.isnan(nocs_generated).any():
                 loss += nocs_loss +  2 * perceptual_loss_nocs
 
