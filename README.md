@@ -20,14 +20,16 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
 
 
-| Dataset                       | Link                                                         | Size (GB) |
-| ----------------------------- | ------------------------------------------------------------ | --------- |
-| Cars (**prepared**) (small)   | [link](https://iiitaphyd-my.sharepoint.com/:u:/r/personal/robotics_iiit_ac_in/Documents/DRACO/car_reflection_canonical_wo_depth.zip?csf=1&web=1&e=I2EE6N) | 3.8       |
-| Planes (**prepared**) (small) | Coming soon                                                  | 3.6       |
-| DRACO20K cars                 | Coming soon                                                  | 89        |
-| DRACO20K planes               | Coming soon                                                  | 15        |
+| Dataset                                   | Link                                                         | Size (GB) |
+| ----------------------------------------- | ------------------------------------------------------------ | --------- |
+| Cars (**prepared**) (small) (train/val)   | [link](https://iiitaphyd-my.sharepoint.com/:u:/g/personal/robotics_iiit_ac_in/Een9wSA_PYlHheIWpjpy_WMBuN_Uu4wmysiWyTaC-NJY0w) | 3.8       |
+| Cars (test)                               | Coming soon                                                  | -         |
+| Planes (**prepared**) (small) (train/val) | Coming soon                                                  | -         |
+| Planes (test)                             | Coming soon                                                  | -         |
+| DRACO20K cars                             | [link](https://iiitaphyd-my.sharepoint.com/:u:/g/personal/robotics_iiit_ac_in/ESob7ukQoxRKp-hBl7FQWZMBrvV8ZyfFEnUrCWRiwjtFFg) | 89        |
+| DRACO20K planes                           | [link](https://iiitaphyd-my.sharepoint.com/:u:/g/personal/robotics_iiit_ac_in/EbjtPOwEwstIva-d33sjcP0BnlyNIPKhbFvI6CyD2UEJKA) | 15        |
 
-To begin training, download the Cars (**prepared**) dataset and save unzip to path `./data/DRACO20K_cars`. 
+To begin training, download the Cars (**prepared**) dataset and unzip to path `./data/DRACO20K_cars`. 
 
 
 
@@ -54,12 +56,11 @@ To begin training, download the Cars (**prepared**) dataset and save unzip to pa
    ```bash
    cd DRACO
    # Before running the script change the path to the dataset in /DRACO/cfgs/config_DRACO.yaml
-   
    CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py
    ```
-
    
-
+   
+   
 3. #### Testing
 
    ```bash
@@ -85,7 +86,7 @@ Coming soon.
 
 
 
-If you find our work helpful, please consider to citing:
+If you find our work helpful, please consider citing:
 
 ```
 @misc{sajnani2020draco,
