@@ -75,7 +75,7 @@ def save_point_cloud(K, image, mask, depth, ply_name, depth_tiff = None):
 
 
     image_colors = image.reshape(-1, 3)
-    
+
     invK = np.linalg.inv(K)
     point_cloud = depth_2_point_cloud(invK, image, depth, depth_tiff)
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     ################################# Argument Parser #####################################
 
     parser = argparse.ArgumentParser()
-    
+
     parser.add_argument("--path", help = "Path to images", required=True)
     parser.add_argument("--model", help = "Model weights", required=True)
     parser.add_argument("--output", help = "Output directory path", required=True)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--normalize", required=False, type=int, default=1)
-    parser.add_argument("--real", help = "Real images?", required=False, default = 0)
+    parser.add_argument("--real", help = "Real images?", required=False, default = 0, type=int)
     # parser.add_argument("--multi_seq", help = "Multiple sequences", type=int, default=1)
 
     args = parser.parse_args()
@@ -124,20 +124,26 @@ if __name__ == "__main__":
     if not os.path.exists(directory_save):
         os.makedirs(directory_save)
 
-
-    images_list = glob.glob(os.path.join(args.path, "**/frame_**_Color_00.png"))
-    
+    images_list = []
+    images_paths = os.path.join(args.path, "") + "**/frame_**_Color_00.png"
+    images_list = glob.glob(images_paths)
     if args.real:
         images_list = glob.glob(os.path.join(args.path, "**/**.jpg"))
 
     if len(images_list) == 0:
-        images_list = glob.glob(os.path.join(args.path, "frame_**_Color_00.png"))
-        if args.real:
-            images_list = glob.glob(os.path.join(args.path, "**.jpg"))
+
+        images_paths = os.path.join(args.path, "") + "frame_**_Color_00.png"
+        #print(images_paths)
+
+        images_list.extend(glob.glob(images_paths))
+        #print(images_list)
+        if args.real == 1:
+            print("real")
+            images_list.extend(glob.glob(os.path.join(args.path, "**.jpg")))
 
     images_list.sort()
 
-
+    #print(images_list)
     net = training_model.load_from_checkpoint(args.model)
     net.eval()
 
@@ -147,7 +153,7 @@ if __name__ == "__main__":
 
 
     for image_name in images_list:
-        
+
         directory, tail = os.path.split(image_name)
         name_without_ext, ext = os.path.splitext(tail)
         print(name_without_ext)
@@ -155,16 +161,22 @@ if __name__ == "__main__":
         sub_directory_save = os.path.join(directory_save + image_name.split('/')[-2], "")
         if not os.path.exists(sub_directory_save):
             os.makedirs(sub_directory_save)
-        
-        image_view = cv2.imread(image_name)
-        image_view = cv2.cvtColor(image_view, cv2.COLOR_BGR2RGB) / 255.0
-        image_view = cv2.resize(image_view, (640, 480))
 
-        
-        if args.real:
+        image_view = plt.imread(image_name)[:, :, :3]
+
+        if image_view.max() > 1:
+            image_view = image_view / 255.0
+        #image_view = cv2.cvtColor(image_view, cv2.COLOR_BGR2RGB) / 255.0
+        image_view = cv2.resize(image_view, (640, 480))
+        print(image_view.shape, "not real")
+
+        if args.real == 1:
+            print("real")
             image_view = cv2.resize(image_view, (440, 280))
+            #print(image_view.shape)
             image_view = cv2.copyMakeBorder(image_view, 100, 100, 100, 100, cv2.BORDER_CONSTANT)
-        
+
+
         if torch.cuda.is_available():
             image_tensor = torch.from_numpy(image_view.transpose(2, 0, 1)).unsqueeze(0).cuda()
         else:
@@ -204,12 +216,13 @@ if __name__ == "__main__":
         mask = (mask*255).astype("uint8")
 
 
-        mask_name = sub_directory_save + name_without_ext + "_mask.jpg" 
+        mask_name = sub_directory_save + name_without_ext + "_mask.jpg"
         nocs_name = sub_directory_save + name_without_ext + "_nocs.jpg"
         depth_tiff_name = sub_directory_save + name_without_ext + "_depth.tiff"
 
-        plt.imsave(image_name, image)
+        image_name_save = sub_directory_save + name_without_ext + "_input.jpg"
+        plt.imsave(image_name_save, image)
         plt.imsave(nocs_name, nocs)
-        cv2.imwrite(mask_name, mask)
+        plt.imsave(mask_name, mask)
         im_depth_tiff.save(depth_tiff_name)
         #############################################################################################
