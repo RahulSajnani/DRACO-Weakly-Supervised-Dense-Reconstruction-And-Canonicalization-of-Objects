@@ -84,7 +84,7 @@ def generate_nocs(data_sample, depth_maps):
             scale_point_cloud_norm = 0.85 / (dim_variance + 0.00001)
 
             # Transforming image point cloud to canonical frame
-            image_frame_cloud = scale_point_cloud_norm * (c3dpo_rotation.transpose(0, 1) @ Rotation.T @ (image_frame_cloud.reshape(3, h*w) - Translation.unsqueeze(1).repeat(1, h*w))) + 0.5
+            image_frame_cloud = scale_point_cloud_norm * (c3dpo_rotation.transpose(0, 1) @ Rotation @ (image_frame_cloud.reshape(3, h*w) - Translation.unsqueeze(1).repeat(1, h*w))) + 0.5
 
             # image_frame_cloud.clamp(min=0, max = 1)
             image_frame_cloud = image_frame_cloud.reshape((3, h, w))
@@ -159,7 +159,7 @@ def generate_nocs_single(data_sample, depth_map):
     scale_point_cloud_norm = 0.85 / (dim_variance + 0.00001)
 
     # Transforming image point cloud to canonical frame
-    image_frame_cloud = scale_point_cloud_norm * (c3dpo_rotation.transpose(0, 1) @ Rotation.T @ (image_frame_cloud.reshape(3, h*w) - Translation.unsqueeze(1).repeat(1, h*w))) + 0.5
+    image_frame_cloud = scale_point_cloud_norm * (c3dpo_rotation.transpose(0, 1) @ Rotation @ (image_frame_cloud.reshape(3, h*w) - Translation.unsqueeze(1).repeat(1, h*w))) + 0.5
 
     # image_frame_cloud.clamp(min=0, max = 1)
     image_frame_cloud = image_frame_cloud.reshape((3, h, w))

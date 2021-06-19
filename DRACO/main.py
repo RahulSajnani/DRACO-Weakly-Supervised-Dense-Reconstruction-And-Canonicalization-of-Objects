@@ -8,6 +8,7 @@ import os, hydra, logging, glob
 from omegaconf import DictConfig
 from pytorch_lightning.loggers import CometLogger, TensorBoardLogger
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
+import torch
 
 # Training models
 from trainers import DRACO_phase_1 as training_model_1
@@ -27,11 +28,13 @@ def run(cfg):
 
     trainer = Trainer(**cfg.trainer, callbacks = [checkpoint_callback])
     trainer.fit(model)
-
+    del model
+    torch.cuda.empty_cache()
     print(os.getcwd())
+    
     checkpoint_file = glob.glob("./checkpoints/**.ckpt")[0]
     
-    #checkpoint_file = glob.glob("/home/rahulsajnani/research/DRACO-Weakly-Supervised-Dense-Reconstruction-And-Canonicalization-of-Objects/DRACO/outputs/2021-06-12/02-55-56/checkpoints/*.ckpt")[0]
+    #checkpoint_file = "/home/rahulsajnani/research/DRACO-Weakly-Supervised-Dense-Reconstruction-And-Canonicalization-of-Objects/DRACO/outputs/2021-06-16/15-56-04/checkpoints/model-epoch=13-val_loss=0.4947-depth.ckpt"
     model = training_model_1.load_from_checkpoint(checkpoint_path = checkpoint_file)
 
     ############# Phase 2 training the NOCS decoder
