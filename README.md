@@ -31,6 +31,8 @@ We present **DRACO**, a method for **D**ense **R**econstruction **A**nd **C**ano
 
 To begin training, download the Cars (**prepared**) dataset and unzip to path `./data/DRACO20K_cars`. 
 
+Details of the dataset as well as rendering instructions can be found [here](./DRACO20K/README.md).
+
 
 
 ## Running the code
