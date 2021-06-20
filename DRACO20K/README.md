@@ -1,6 +1,6 @@
 # DRACO20K
 
-This repository contains scripts to generate DRACO20K dataset from ShapeNet models. 
+Scripts to generate DRACO20K dataset from ShapeNet models and additional details about the dataset. 
 
 
 
