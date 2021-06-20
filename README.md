@@ -42,6 +42,7 @@ Details of the dataset as well as rendering instructions can be found [here](./D
    Follow the following instructions to load the environment.
 
    ```bash
+   cd <repo>
    conda create -f environment.yaml
    # As tk3dv is not available on PyPi this will throw an error while installing tk3dv but that is not an issue
    conda activate DRACO
@@ -56,7 +57,7 @@ Details of the dataset as well as rendering instructions can be found [here](./D
    **Note:** As the second training phase is heavy (due to the DRACO + VGG (perceptual loss) + multi-view consistency), make sure you set the batch_size as the number of GPUs available for training. For instance, if you have 2 GPUs set batch_size to 2 and accumulated_num_batches to 6 (2 x 6 = 12)
 
    ```bash
-   cd DRACO
+   cd <repo>/DRACO
    # Before running the script change the path to the dataset in /DRACO/cfgs/config_DRACO.yaml
    CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py
    ```
@@ -66,7 +67,7 @@ Details of the dataset as well as rendering instructions can be found [here](./D
 3. #### Testing
 
    ```bash
-   cd DRACO
+   cd <repo>/DRACO
    # For DRACO20K dataset
    CUDA_VISIBLE_DEVICES=0,1,2,3 python evaluation.py --model <path_to_checkpoint> --path <path_to_directory_with_images> --output <path_to_output_directory> --real 0
    
