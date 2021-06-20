@@ -35,6 +35,8 @@ Prepared dataset structure:
 
 ```bash
 ├── DRACO20K_prepared
+    ├── train.txt                                                 - Training split
+    ├── val.txt                                                   - Val split
     ├── a2d1b78e03f3cc39d1e95557cb698cdf 
         ├── CameraPose_00000001.json                              - Camera poses 
         ├── keypoints_00000001.npy  	                          - Keypoints                                 - V x 1   x 3 x N
