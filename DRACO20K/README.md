@@ -12,14 +12,14 @@ This section details the dataset structure (actual and prepared) used by DRACO a
 
 The following is the DRACO20K dataset structure:
 
-```bash
+```markdown
 ├── DRACO20K
     ├── a2d1b78e03f3cc39d1e95557cb698cdf   - Training sequence ID
         ├── frame_00000000_CameraPose.json - Camera poses                - json
         ├── frame_00000000_Color_00.png    - RGB single view image       - H x W x 3 
         ├── frame_00000000_Depth_00.exr    - Ground truth Depth maps     - H x W x 1 
         ├── frame_00000000_KeyPoints.npy   - Keypoints with visibility   - N x 3 	
-        ├── frame_00000000_Mask_00.png     - Ground truth Masks			 - H x W x 1 
+        ├── frame_00000000_Mask_00.png     - Ground truth Masks          - H x W x 1 
         ├── frame_00000000_NOXRayTL_00.png - NOCS Ground truth images    - H x W x 3
 ```
 
@@ -37,15 +37,13 @@ Prepared dataset structure:
 ├── DRACO20K_prepared
     ├── a2d1b78e03f3cc39d1e95557cb698cdf 
         ├── CameraPose_00000001.json                              - Camera poses 
-        ├── keypoints_00000001.npy  	                          - Keypoints         			              - V x 1   x 3 x N
-        ├── view_00000001.jpg              						  - RGB images		   			              - H x V*W x 3
-        ├── c3dpo_00000001_rotation.npy    						  - Canonical to view rotation (from C3DPO) - V x 1   x 3 x 3
-        ├── depth_00000001.tiff (not used in training)            - Ground truth depth maps                  - H x V*W x 1      
-        ├── mask_00000001.jpg                                     - Ground truth masks
-        			  - H x V*W x 1
-        ├── c3dpo_00000001_cam_coords.npy	                      - C3DPO lifted keypoints
-        			  - V x 1   x 3 x N
-       	├── nocs_00000001.jpg   (not used in training)            - Ground truth NOCS maps
+        ├── keypoints_00000001.npy  	                          - Keypoints                                 - V x 1   x 3 x N
+        ├── view_00000001.jpg                                     - RGB images                                - H x V*W x 3
+        ├── c3dpo_00000001_rotation.npy                           - Canonical to view rotation (from C3DPO)   - V x 1   x 3 x 3
+        ├── depth_00000001.tiff (not used in training)            - Ground truth depth maps                   - H x V*W x 1      
+        ├── mask_00000001.jpg                                     - Ground truth masks                        - H x V*W x 1
+        ├── c3dpo_00000001_cam_coords.npy                         - C3DPO lifted keypoints                    - V x 1   x 3 x N
+       	├── nocs_00000001.jpg   (not used in training)            - Ground truth NOCS maps                    - H x V*W x 3
 
 # Notations for dimensions
 # V = Number of views 
