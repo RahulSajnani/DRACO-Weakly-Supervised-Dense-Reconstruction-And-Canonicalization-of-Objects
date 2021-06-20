@@ -43,7 +43,7 @@ Details of the dataset as well as rendering instructions can be found [here](./D
 
    ```bash
    cd <repo>
-   conda create -f environment.yaml
+   conda env create -f environment.yaml
    # As tk3dv is not available on PyPi this will throw an error while installing tk3dv but that is not an issue
    conda activate DRACO
    # Install tk3dv manually in the same environment
